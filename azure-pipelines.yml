@@ -4,44 +4,35 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  - main
 
 pool:
   vmImage: windows-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: "Subscription"
+      azureResourceManagerConnection: "Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)"
+      subscriptionId: "57f9f11d-75a1-424d-bc4a-1f9d737c1a5b"
+      location: "Australia East"
+      templateLocation: "Linked artifact"
+      csmFile: "./deployment/main.bicep"
+      csmParametersFile: "./deployment/main.parameters.json"
+      deploymentMode: "Incremental"
+      deploymentName: "website"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: AzureFileCopy@4
+    inputs:
+      SourcePath: "src/**/*"
+      azureSubscription: "Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)"
+      Destination: "AzureBlob"
+      storage: "yzwebsite8922"
+      ContainerName: "$web"
 
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Subscription'
-    azureResourceManagerConnection: 'Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)'
-    subscriptionId: '57f9f11d-75a1-424d-bc4a-1f9d737c1a5b'
-    location: 'Australia East'
-    templateLocation: 'Linked artifact'
-    csmFile: './deployment/main.bicep'
-    csmParametersFile: './deployment/main.parameters.json'
-    deploymentMode: 'Incremental'
-    deploymentName: 'website'
-
-- task: AzureFileCopy@4
-  inputs:
-    SourcePath: 'src/**/*'
-    azureSubscription: 'Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)'
-    Destination: 'AzureBlob'
-    storage: 'yzwebsite8922'
-    ContainerName: '$web'
-
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)'
-    scriptType: 'batch'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az storage blob service-properties update --account-name "yzwebsite8922" --static-website --404-document "error.html" --index-document "index.html"'
-
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: "Pay-As-You-Go (Azure Courses)(57f9f11d-75a1-424d-bc4a-1f9d737c1a5b)"
+      scriptType: "batch"
+      scriptLocation: "inlineScript"
+      inlineScript: 'az storage blob service-properties update --account-name "yzwebsite8922" --static-website --404-document "error.html" --index-document "index.html"'
