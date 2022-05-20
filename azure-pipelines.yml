@@ -25,8 +25,8 @@ steps:
     subscriptionId: '57f9f11d-75a1-424d-bc4a-1f9d737c1a5b'
     location: 'Australia East'
     templateLocation: 'Linked artifact'
-    csmFile: 'deployment\main.bicep'
-    csmParametersFile: 'deployment\main.parameters.json'
+    csmFile: './deployment/main.bicep'
+    csmParametersFile: './deployment/main.parameters.json'
     deploymentMode: 'Incremental'
     deploymentName: 'website'
 
